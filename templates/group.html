@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Список сообществ{% endblock %}
+{% block content %}
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+    {% for group in groups %}
+      <div class="col" >
+        
+        <div class="card shadow-sm" style="height: 250px;">
+          <p class="h1" style="text-align: center;">{{ group.title }}</p>
+  
+          <div class="card-body">
+            <p class="card-text">{{group.description|truncatewords:15}}</p>
+            </a>
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="btn-group" >
+                <a href= "{% url 'group_detail' group.slug %}" class="btn btn-sm btn-outline-secondary">Смотреть</a> 
+              </div>  
+              <small class="text-muted">Постов: {{ group.posts.all.count }}</small>     
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+        </div>
+
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}{{ post.title }}{% endblock %}
+{% block content %}
+<h1 class="text-center">{{ post.title }}</h1>
+{% if post.image %}
+<img src="{{post.image.url}}" height="600px" width="1000px" class="rounded mx-auto d-block">
+{% endif %}
+<p class="lead" style="padding-top: 10px;">{{ post.description }}</p>
+{% if request.user == post.author %}
+<a href= "{% url 'delete' post.id %}" class="btn btn-sm btn-outline-secondary">Удалить пост</a>
+{% endif %}
+<p><small class="text-muted">Количество комментариев: {{ count }}</small></p>
+<p><small class="text-muted">Лайки: {{post.likes.all.count}}</small></p>
+
+{% if not like %}
+<a href= "{% url 'like' post.id %}" class="btn btn-sm btn-outline-secondary">Мне нравится</a>
+{% else %}
+<a href= "{% url 'not_like' post.id %}" class="btn btn-sm btn-outline-secondary">Не нравится</a>
+{% endif %}
+
+{% include 'comments.html' %}
+<!-- Комментарии -->
+{% for comment in comments %}
+<div class="media card mb-4">
+    <div class="media-body card-body">
+        <h5 class="mt-0">
+            <a href="#"
+               name="comment_{{ item.id }}">
+                {{ comment.author.username }}
+            </a>
+        </h5>
+        <p>{{ comment.text | linebreaksbr }}</p>
+        <div class="d-flex justify-content-between align-items-center "> 
+            <small class="text-muted">{{comment.created}}</small>
+</div>
+    </div>
+    
+</div>
+{% endfor %}
+{% endblock %}
