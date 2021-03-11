@@ -49,6 +49,7 @@
           <ul class="list-unstyled">
             {% if user.is_authenticated %}           
             <li><a href="{% url 'new_post' %}" class="text-white">Новый пост</a></li>
+            <li><a href="{% url 'myprofile' user.username %}" class="text-white">Мой профиль</a></li>
             <li><a href="{% url 'password_change' %}" class="text-white">Изменить пароль</a></li>
             <li><a href="{% url 'logout' %}" class="text-white">Выход</a></li>            
             {% else %}

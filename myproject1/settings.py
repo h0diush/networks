@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'main',
     'users',
     'api',
+    'bootstrap4',
 ]
 
 MIDDLEWARE = [

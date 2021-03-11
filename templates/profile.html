@@ -1,8 +1,20 @@
 {% extends 'base.html' %}
 {% block title %}{{user.username}}{% endblock %}
 {% block content %}
-<p class="h1">Посты пользователя: {{post.author.username}}</p> 
-<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+<p class="h1">Посты пользователя {{user.username}}: </p> 
+<div class="h6 text-muted" style="margin-bottom: 32px;">
+  Подписчиков: {{user.following.all.count}} <br />
+  Подписан: {{user.follower.all.count}}
+  </div>
+  {% if user != request.user %}
+  {% if not follow %}
+  <a href= "{% url 'profile_follow' user.username %}" class="btn btn-sm btn-outline-secondary">Подписаться</a>
+ {% else %}
+  <a href= "{% url 'profile_unfollow' user.username %}" class="btn btn-sm btn-outline-secondary">Отписаться</a>              
+  {% endif %}
+  {% endif %}
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3" style="margin-top: 24px;">
    
   {% for post in posts %}
     <div class="col" >

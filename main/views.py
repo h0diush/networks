@@ -1,8 +1,9 @@
 from django.contrib.auth.decorators import login_required
+from django.http import request
 from django.shortcuts import get_object_or_404, redirect, render
 
 from main.forms import CommentForm, PostForm
-from main.models import Group, Like, Post, User
+from main.models import Follow, Group, Like, Post, User
 
 
 def index(request):
@@ -96,7 +97,15 @@ def add_comment(request, pk):
 def profile(request, username):
     user = get_object_or_404(User, username=username)
     posts = user.posts.all()
-    context = {'user': user, 'posts': posts}
+    followers = []
+    follow = False
+    following = user.following.all()
+    for us in following:
+        author_foll = us.user
+        followers.append(author_foll)
+    if request.user in followers:
+        follow = True
+    context = {'user': user, 'posts': posts, 'follow':follow}
     return render(request, 'profile.html', context)
 
 
@@ -113,3 +122,28 @@ def not_like(request, pk):
     post_like = Like.objects.get(user=request.user, post=post)
     post_like.delete()
     return redirect('detail', pk)
+
+
+@login_required
+def profile_follow(request, username):
+    author_post = get_object_or_404(User, username=username)
+    if request.user != author_post:
+        Follow.objects.create(user=request.user, author=author_post)
+    return redirect('profile', username)
+    
+
+
+def profile_unfollow(request, username):
+    author_post = get_object_or_404(User, username=username)
+    user = get_object_or_404(User, username=request.user)
+    follow = Follow.objects.filter(author=author_post, user=user)
+    follow.delete()
+    return redirect('profile', username)
+
+
+def myprofile(request, username):
+    user = get_object_or_404(User, username=username)
+    post = user.posts.all()
+    post_list = Post.objects.filter(author__following__user=request.user)
+    context = {'posts': post, 'posts_list': post_list}
+    return render(request, 'myprofile.html', context)

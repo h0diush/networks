@@ -99,3 +99,18 @@ class Like(models.Model):
     class Meta:
         verbose_name = 'Лайк'
         verbose_name_plural = 'Лайки'
+
+
+class Follow(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='follower', verbose_name='Подписчик')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='following', verbose_name='Автор поста')
+
+    def __str__(self) -> str:
+        return f'{self.author} - {self.user}'
+
+    class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'author'], name='unique_follow')]
