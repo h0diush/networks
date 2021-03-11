@@ -32,6 +32,10 @@
         <p>{{ comment.text | linebreaksbr }}</p>
         <div class="d-flex justify-content-between align-items-center "> 
             <small class="text-muted">{{comment.created}}</small>
+            {% if comment.author == request.user %}
+            <a href= "{% url 'del_comment' post.id comment.id %}" class="btn btn-sm btn-outline-secondary">Удалить</a>
+            {% endif %}
+            
 </div>
     </div>
     

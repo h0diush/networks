@@ -1,9 +1,8 @@
 from django.contrib.auth.decorators import login_required
-from django.http import request
 from django.shortcuts import get_object_or_404, redirect, render
 
 from main.forms import CommentForm, PostForm
-from main.models import Follow, Group, Like, Post, User
+from main.models import Comment, Follow, Group, Like, Post, User
 
 
 def index(request):
@@ -105,7 +104,7 @@ def profile(request, username):
         followers.append(author_foll)
     if request.user in followers:
         follow = True
-    context = {'user': user, 'posts': posts, 'follow':follow}
+    context = {'user': user, 'posts': posts, 'follow': follow}
     return render(request, 'profile.html', context)
 
 
@@ -130,7 +129,6 @@ def profile_follow(request, username):
     if request.user != author_post:
         Follow.objects.create(user=request.user, author=author_post)
     return redirect('profile', username)
-    
 
 
 def profile_unfollow(request, username):
@@ -141,9 +139,19 @@ def profile_unfollow(request, username):
     return redirect('profile', username)
 
 
+@login_required
 def myprofile(request, username):
     user = get_object_or_404(User, username=username)
     post = user.posts.all()
     post_list = Post.objects.filter(author__following__user=request.user)
     context = {'posts': post, 'posts_list': post_list}
     return render(request, 'myprofile.html', context)
+
+
+@login_required
+def delete_comment(request, pk, comment_id):   
+    post = Post.objects.get(id=pk) 
+    comment = Comment.objects.get(id=comment_id)
+    if comment.author == request.user:
+        comment.delete()    
+    return redirect('detail', pk)
