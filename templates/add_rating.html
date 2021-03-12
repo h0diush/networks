@@ -1,0 +1,11 @@
+{% if user.is_authenticated %}
+<div class="mb-3" style="margin-top: 18px;">
+    <form method="post" action="{% url 'add_rating' post.id %}">
+    {% csrf_token %}
+    <!-- <label for="customRange3" class="form-label">Поставить оценку</label> -->
+    {{ form_rating}}
+    <button type="submit" class="btn btn-primary">Отправить</button>
+</form>
+  </div>
+{% else %}
+{% endif %}

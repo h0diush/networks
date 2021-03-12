@@ -2,6 +2,8 @@
 {% block title %}{{ post.title }}{% endblock %}
 {% block content %}
 <h1 class="text-center">{{ post.title }}</h1>
+<br><br><br>
+<h1>Рейтинг: {{rating.rating__avg|floatformat}}</h1> <br><br>  
 {% if post.image %}
 <img src="{{post.image.url}}" height="600px" width="1000px" class="rounded mx-auto d-block">
 {% endif %}
@@ -17,7 +19,9 @@
 {% else %}
 <a href= "{% url 'not_like' post.id %}" class="btn btn-sm btn-outline-secondary">Не нравится</a>
 {% endif %}
-
+{% if request.user != rating.user %}
+{% include 'add_rating.html' %}
+{% endif %}
 {% include 'comments.html' %}
 <!-- Комментарии -->
 {% for comment in comments %}
@@ -41,4 +45,5 @@
     
 </div>
 {% endfor %}
+
 {% endblock %}

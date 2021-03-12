@@ -22,6 +22,7 @@ urlpatterns = [
     path('post/<int:pk>/del_comment/<int:comment_id>/', views.delete_comment, name='del_comment'),
     path('<int:pk>/edit/', views.edit_post, name='edit_post'),
     path('group/<str:slug>/', views.group_id, name='group_detail'),
-    path('<int:pk>/add_comment/', views.add_comment, name='add_comment'),    
+    path('<int:pk>/add_comment/', views.add_comment, name='add_comment'),  
+    path('post/<int:pk>/add_rating/', views.add_rating, name='add_rating'),    
     path('<int:pk>/delete/', views.delete, name='delete'),
 ]

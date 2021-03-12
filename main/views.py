@@ -1,8 +1,10 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
+from django.db.models import Avg
+from django.contrib import messages
 
-from main.forms import CommentForm, PostForm
-from main.models import Comment, Follow, Group, Like, Post, User
+from main.forms import CommentForm, PostForm, RatingForm
+from main.models import Comment, Follow, Group, Like, Post, Rating, User
 
 
 def index(request):
@@ -29,7 +31,9 @@ def post_id(request, pk):
     post = Post.objects.get(id=pk)
     comments = post.comments.all()
     count = post.comments.count()
+    rating = Rating.objects.filter(post=post).aggregate(Avg('rating'))
     form = CommentForm()
+    form_rating = RatingForm()
     likes = post.likes.all()
     like = False
     post_likes = []
@@ -43,7 +47,9 @@ def post_id(request, pk):
         'post': post,
         'form': form,
         'count': count,
-        'like': like}
+        'like': like,
+        'form_rating': form_rating,
+        'rating': rating}
     return render(request, 'post_id.html', context)
 
 
@@ -88,6 +94,7 @@ def add_comment(request, pk):
         comment.author = request.user
         comment.post = post
         comment.save()
+        messages.success(request, 'Вы поставили оценку')
         return redirect('detail', pk)
     context = {'form': form, 'post': post}
     return render(request, 'comments.html', context)
@@ -155,3 +162,20 @@ def delete_comment(request, pk, comment_id):
     if comment.author == request.user:
         comment.delete()    
     return redirect('detail', pk)
+
+
+@login_required
+def add_rating(request, pk):
+    post = get_object_or_404(Post, id=pk)
+    form = RatingForm(request.POST or None)
+    if form.is_valid():
+        new_form = form.save(commit=False)
+        new_form.post = post
+        new_form.user = request.user
+        new_form.save()
+        return redirect('detail', pk)
+    context = {'form': form, 'post': post}
+    return render(request, 'add_rating.html', context)
+
+    
+

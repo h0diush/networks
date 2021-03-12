@@ -6,6 +6,7 @@ from rest_framework.permissions import SAFE_METHODS, AllowAny
 from api.serializers import (GroupSerializer, PostCreateSerializer,
                              PostSerializer, UserCreateSerializer,
                              UserSerializer)
+from api.permissions import IsOwnerReadOnly
 from main.models import Group, Post, User
 
 

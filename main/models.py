@@ -37,13 +37,6 @@ class Post(models.Model):
         blank=True,
         verbose_name='Группа',
         related_name='posts')
-    rating = models.PositiveIntegerField(
-        verbose_name='Рейтинг',
-        validators=[
-            MaxValueValidator(10),
-            MinValueValidator(1)],
-        blank=True,
-        null=True)
     image = models.ImageField(
         verbose_name='Картинка',
         blank=True,
@@ -122,3 +115,20 @@ class Follow(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=['user', 'author'], name='unique_follow')]
+
+
+class Rating(models.Model):
+    rating = models.PositiveIntegerField(verbose_name='Рейтинг',
+        validators=[
+            MaxValueValidator(10),
+            MinValueValidator(1)],
+            null=True)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='rating', verbose_name='Пост')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='rating', verbose_name='Пользователь')
+
+    class Meta:
+        verbose_name = 'Рейтинг'
+        verbose_name_plural = 'Рейтинги'
+
+    def __str__(self) -> str:
+        return f'{self.post} -> {self.rating}'
