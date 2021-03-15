@@ -3,7 +3,10 @@
 {% block content %}
 <h1 class="text-center">{{ post.title }}</h1>
 <br><br><br>
-<h1>Рейтинг: {{rating.rating__avg|floatformat}}</h1> <br><br>  
+
+
+<h1>{% if rating.rating__avg > 0 %}Рейтинг:{% endif %} {{rating.rating__avg|floatformat}}</h1> <br><br>  
+
 {% if post.image %}
 <img src="{{post.image.url}}" height="600px" width="1000px" class="rounded mx-auto d-block">
 {% endif %}
@@ -19,8 +22,10 @@
 {% else %}
 <a href= "{% url 'not_like' post.id %}" class="btn btn-sm btn-outline-secondary">Не нравится</a>
 {% endif %}
-{% if request.user != rating.user %}
+{% if not rating_bool%}
 {% include 'add_rating.html' %}
+{% else %}
+<p class="h1">Вы уже поставили оценку</p>
 {% endif %}
 {% include 'comments.html' %}
 <!-- Комментарии -->

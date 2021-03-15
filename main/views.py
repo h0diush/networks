@@ -32,6 +32,14 @@ def post_id(request, pk):
     comments = post.comments.all()
     count = post.comments.count()
     rating = Rating.objects.filter(post=post).aggregate(Avg('rating'))
+    rating_us = post.rating.all()
+    rating_all = []
+    rating_bool = False
+    for rt in rating_us:
+        rating_user = rt.user
+        rating_all.append(rating_user)
+    if request.user in rating_all:
+        rating_bool = True
     form = CommentForm()
     form_rating = RatingForm()
     likes = post.likes.all()
@@ -49,7 +57,8 @@ def post_id(request, pk):
         'count': count,
         'like': like,
         'form_rating': form_rating,
-        'rating': rating}
+        'rating': rating,
+        'rating_bool': rating_bool}
     return render(request, 'post_id.html', context)
 
 
