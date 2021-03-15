@@ -2,7 +2,7 @@
 {% block title %}Главная{% endblock %}
 {% block content %}
 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-  {% for post in posts %}
+  {% for post in page %}
     <div class="col" >
       
       <div class="card shadow-sm" style="height: 500px;">
@@ -36,5 +36,9 @@
     </div>
     {% endfor %}
       </div>
+      <br><br>
+      {% if page.has_other_pages %}
+            {% include "paginator.html" with items=posts paginator=paginator%}
+        {% endif %}
       <!-- transform: translate(-50%, -50%, -50%, -50%); top: 30%; left: 50%; -->
 {% endblock %}

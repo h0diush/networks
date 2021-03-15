@@ -2,15 +2,22 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.db.models import Avg
 from django.contrib import messages
+from django.core.paginator import Paginator
 
 from main.forms import CommentForm, PostForm, RatingForm
 from main.models import Comment, Follow, Group, Like, Post, Rating, User
 
 
 def index(request):
-    posts = Post.objects.all()
-    # paginator
-    context = {'posts': posts}
+    search_query = request.GET.get('search', '')
+    if search_query:
+        posts = Post.objects.filter(title__icontains=search_query)
+    else:
+        posts = Post.objects.all()
+    paginator = Paginator(posts, 6)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+    context = {'page': page, 'paginator': paginator}
     return render(request, 'index.html', context)
 
 

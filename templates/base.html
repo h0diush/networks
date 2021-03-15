@@ -56,6 +56,10 @@
             <li><a href="{% url 'login' %}" class="text-white">Вход</a></li>
             <li><a href="{% url 'signup' %}" class="text-white">Регистрация</a></li>
             {% endif %}
+            <form class="d-flex" action="{% url 'index' %}">
+              <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Search" name="search">
+              <button class="btn btn-outline-light" type="submit">Поиск</button>
+            </form>
           </ul>
         </div>
       </div>
